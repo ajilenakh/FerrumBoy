@@ -1,0 +1,50 @@
+# ------------------------
+# Rust build output
+# ------------------------
+/target
+**/target/
+
+# ------------------------
+# Cargo
+# ------------------------
+Cargo.lock
+
+# ------------------------
+# IDEs / editors
+# ------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ------------------------
+# Logs
+# ------------------------
+*.log
+logs/
+
+# ------------------------
+# OS files
+# ------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------
+# Debug / profiling
+# ------------------------
+perf.data*
+flamegraph.svg
+
+# ------------------------
+# Emulator-specific (yours)
+# ------------------------
+roms/*.sav
+roms/*.state
+test-roms/*.sav
+test-roms/*.state
+
+# optional save states / snapshots
+*.sav
+*.state
+*.snapshot
