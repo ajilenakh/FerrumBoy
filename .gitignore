@@ -39,10 +39,8 @@ flamegraph.svg
 # ------------------------
 # Emulator-specific (yours)
 # ------------------------
-roms/*.sav
-roms/*.state
-test-roms/*.sav
-test-roms/*.state
+roms/
+test-roms/
 
 # optional save states / snapshots
 *.sav

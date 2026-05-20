@@ -33,9 +33,9 @@ gb-rs/
 - [X] Create Rust workspace
 - [X] Setup Cargo workspace members
 - [x] Setup shared linting and formatting
-- [ ] Setup logging/tracing
-- [ ] Setup ROM directory
-- [ ] Setup test ROM directory
+- [X] Setup logging/tracing
+- [X] Setup ROM directory
+- [X] Setup test ROM directory
 - [ ] Setup CI workflow
 - [ ] Create base README
 
