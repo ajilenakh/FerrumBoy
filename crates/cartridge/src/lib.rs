@@ -6,7 +6,8 @@ pub struct Cartridge {
     rom: Vec<u8>,
 }
 
-#[derive(Debug, PartialEq)]
+// Cartridge TYPE
+#[derive(Debug, PartialEq, Eq)]
 pub enum CartridgeType {
     RomOnly,
     MBC1,
@@ -15,22 +16,52 @@ pub enum CartridgeType {
     Unknown(u8),
 }
 
+// ROM SIZE & No.of ROM BANKS
+#[derive(Debug, PartialEq, Eq)]
+pub enum RomSize {
+    KiB32,
+    KiB64,
+    KiB128,
+    KiB256,
+    KiB512,
+    MiB1,
+    MiB2,
+    MiB4,
+    MiB8,
+}
+
+// RAM SIZE
+#[derive(Debug, PartialEq, Eq)]
+pub enum RamSize {
+    Zero,
+    KiB8,
+    KiB32,
+    KiB64,
+    KiB128,
+    Unknown(u8),
+}
+
 impl Cartridge {
-    // Load cartridge from rom
+    /// Loads a cartridge from a ROM file.
+    ///
+    /// # Errors
+    /// Returns an `io::Error` if the file cannot be read
+    /// (e.g. file does not exist or permission denied).
     pub fn load(path: &str) -> io::Result<Self> {
         let rom = fs::read(path)?;
         Ok(Self { rom })
     }
 
-    // Extrat rom title
+    // Extract rom title
+    #[must_use]
     pub fn title(&self) -> String {
         let title_bytes = &self.rom[0x0134..0x0144];
         // Convert Bytes to ASCII
-        let title = String::from_utf8_lossy(title_bytes).trim_end_matches('\0').to_string();
-        title
+        String::from_utf8_lossy(title_bytes).trim_end_matches('\0').to_string()
     }
 
     // Extract cartridge type
+    #[must_use]
     pub fn cartridge_type(&self) -> CartridgeType {
         match self.rom[0x0147] {
             0x00 => CartridgeType::RomOnly,
@@ -38,6 +69,35 @@ impl Cartridge {
             0x02 => CartridgeType::MBC1Ram,
             0x03 => CartridgeType::MBC1RamBattery,
             other => CartridgeType::Unknown(other),
+        }
+    }
+    // Extract rom size
+    #[must_use]
+    pub fn rom_size(&self) -> (RomSize, i16) {
+        match self.rom[0x0148] {
+            0x00 => (RomSize::KiB32, 2),
+            0x01 => (RomSize::KiB64, 4),
+            0x02 => (RomSize::KiB128, 8),
+            0x03 => (RomSize::KiB256, 16),
+            0x04 => (RomSize::KiB512, 32),
+            0x05 => (RomSize::MiB1, 64),
+            0x06 => (RomSize::MiB2, 128),
+            0x07 => (RomSize::MiB4, 256),
+            0x08 => (RomSize::MiB8, 512),
+            _ => unreachable!(),
+        }
+    }
+    //Extract ram size
+    #[must_use]
+    pub fn ram_size(&self) -> RamSize {
+        match self.rom[0x0149] {
+            0x00 => RamSize::Zero,          // No RAM
+            0x01 => RamSize::Unknown(0x01), // Unused
+            0x02 => RamSize::KiB8,          // 1 bank
+            0x03 => RamSize::KiB32,         // 4 banks of 8 KiB each
+            0x04 => RamSize::KiB128,        // 16 banks of 8 KiB each
+            0x05 => RamSize::KiB64,         // 8 banks of 8 KiB each
+            _ => unreachable!(),
         }
     }
 }
