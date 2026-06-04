@@ -3,7 +3,7 @@
 ## Project Structure
 
 ```txt
-gb-rs/
+ferrumboy/
 ├── Cargo.toml
 ├── README.md
 ├── TODO.md
@@ -11,16 +11,16 @@ gb-rs/
 ├── test-roms/
 ├── docs/
 ├── crates/
-│   ├── gb-core/
-│   ├── gb-cpu/
-│   ├── gb-memory/
-│   ├── gb-cartridge/
-│   ├── gb-ppu/
-│   ├── gb-apu/
-│   ├── gb-timer/
-│   ├── gb-input/
-│   ├── gb-terminal/
-│   └── gb-debugger/
+│   ├── core/
+│   ├── cpu/
+│   ├── memory/
+│   ├── cartridge/
+│   ├── ppu/
+│   ├── apu/
+│   ├── timer/
+│   ├── input/
+│   ├── terminal/
+│   └── debugger/
 └── target/
 ```
 
@@ -30,12 +30,12 @@ gb-rs/
 
 ## Phase 0 — Workspace Setup
 
-- [X] Create Rust workspace
-- [X] Setup Cargo workspace members
+- [x] Create Rust workspace
+- [x] Setup Cargo workspace members
 - [x] Setup shared linting and formatting
-- [X] Setup logging/tracing
-- [X] Setup ROM directory
-- [X] Setup test ROM directory
+- [x] Setup logging/tracing
+- [x] Setup ROM directory
+- [x] Setup test ROM directory
 - [ ] Setup CI workflow
 - [ ] Create base README
 
@@ -43,7 +43,7 @@ gb-rs/
 
 # Phase 1 — Cartridge System
 
-## crate: gb-cartridge
+## crate: cartridge
 
 ### Goals
 
@@ -54,18 +54,18 @@ gb-rs/
 
 ### Tasks
 
-- [ ] Implement ROM loader
-- [ ] Parse Nintendo logo
-- [ ] Parse game title
-- [ ] Parse cartridge metadata
-- [ ] Implement ROM ONLY mapper
+- [*] Implement ROM loader
+- [*] Parse Nintendo logo
+- [*] Parse game title
+- [*] Parse cartridge metadata
+- [*] Implement ROM ONLY mapper
 - [ ] Add cartridge tests
 
 ---
 
 # Phase 2 — Memory Bus
 
-## crate: gb-memory
+## crate: memory
 
 ### Goals
 
@@ -101,7 +101,7 @@ FFFF Interrupt Enable
 
 # Phase 3 — CPU Core
 
-## crate: gb-cpu
+## crate: cpu
 
 ### Goals
 
@@ -138,7 +138,7 @@ PC
 
 # Phase 4 — Emulator Core
 
-## crate: gb-core
+## crate: core
 
 ### Goals
 
@@ -169,7 +169,7 @@ loop {
 
 # Phase 5 — Timer Hardware
 
-## crate: gb-timer
+## crate: timer
 
 ### Goals
 
@@ -188,7 +188,7 @@ loop {
 
 # Phase 6 — Interrupt System
 
-## crate: gb-cpu + gb-memory
+## crate: cpu + memory
 
 ### Goals
 
@@ -207,7 +207,7 @@ loop {
 
 # Phase 7 — PPU (Graphics)
 
-## crate: gb-ppu
+## crate: ppu
 
 ### Goals
 
@@ -236,7 +236,7 @@ loop {
 
 # Phase 8 — Terminal Frontend
 
-## crate: gb-terminal
+## crate: terminal
 
 ### Goals
 
@@ -266,7 +266,7 @@ Backspace -> Select
 
 # Phase 9 — Input System
 
-## crate: gb-input
+## crate: input
 
 ### Goals
 
@@ -283,7 +283,7 @@ Backspace -> Select
 
 # Phase 10 — Audio (Optional Early)
 
-## crate: gb-apu
+## crate: apu
 
 ### Goals
 
@@ -302,7 +302,7 @@ Backspace -> Select
 
 # Phase 11 — MBC Support
 
-## crate: gb-cartridge
+## crate: cartridge
 
 ### Goals
 
@@ -320,7 +320,7 @@ Backspace -> Select
 
 # Phase 12 — Debugger
 
-## crate: gb-debugger
+## crate: debugger
 
 ### Goals
 
