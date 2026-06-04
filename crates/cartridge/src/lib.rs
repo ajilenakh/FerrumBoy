@@ -185,12 +185,14 @@ mod test {
     fn test_verify_external_ram_isolation() {
         let mut cart: Cartridge = Cartridge::load("../../dummyrom.gb").unwrap();
 
-        if ram_size(&cart.rom) == RamSize::Zero {
-            assert!(cart.ram.is_none());
-            assert_eq!(cart.read8(0xA000), 0xFF);
-            // try write to non-existent RAM
-            cart.write8(0xA000, 0x00);
-            assert_eq!(cart.read8(0xA000), 0xFF);
-        }
+        assert_eq!(
+            ram_size(&cart.rom),
+            RamSize::Zero,
+            "this test requires a ROM with no external RAM"
+        );
+        assert!(cart.ram.is_none());
+        assert_eq!(cart.read8(0xA000), 0xFF);
+        cart.write8(0xA000, 0x00);
+        assert_eq!(cart.read8(0xA000), 0xFF);
     }
 }
