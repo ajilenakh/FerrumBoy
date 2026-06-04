@@ -161,3 +161,36 @@ pub fn ram_size(rom_bytes: &[u8]) -> RamSize {
         _ => unreachable!(),
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_metadata_parsers_validity() {
+        let cart: Cartridge = Cartridge::load("../../dummyrom.gb").unwrap();
+        assert_eq!(title(&cart.rom), "DUMMYROM");
+        assert_eq!(cartridge_type(&cart.rom), CartridgeType::RomOnly);
+        assert_eq!(ram_size(&cart.rom), RamSize::Zero);
+    }
+
+    #[test]
+    fn test_rom_read_bounds() {
+        let cart: Cartridge = Cartridge::load("../../dummyrom.gb").unwrap();
+        assert_eq!(cart.read8(0x0000), 0x00);
+        assert_eq!(cart.read8(0x7FFF), cart.rom[cart.rom.len() - 1]);
+    }
+
+    #[test]
+    fn test_verify_external_ram_isolation() {
+        let mut cart: Cartridge = Cartridge::load("../../dummyrom.gb").unwrap();
+
+        if ram_size(&cart.rom) == RamSize::Zero {
+            assert!(cart.ram.is_none());
+            assert_eq!(cart.read8(0xA000), 0xFF);
+            // try write to non-existent RAM
+            cart.write8(0xA000, 0x00);
+            assert_eq!(cart.read8(0xA000), 0xFF);
+        }
+    }
+}

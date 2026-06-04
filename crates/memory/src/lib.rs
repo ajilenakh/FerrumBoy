@@ -163,4 +163,18 @@ mod tests {
         bus.write8(IO_END, 0x5A);
         assert_eq!(bus.read8(IO_END), 0x5A);
     }
+
+    #[test]
+    fn test_cartridge_bounds() {
+        let mut bus = Bus::default();
+        bus.load_cartridge(cartridge::Cartridge::load("../../dummyrom.gb").unwrap());
+
+        assert_eq!(bus.read8(0x0100), 0x00);
+        assert_eq!(bus.read8(0x0101), 0xC3);
+        assert_eq!(bus.read8(0x0134), 0x44);
+        assert_eq!(bus.read8(CARTRIDGE_ROM_END), 0x00);
+
+        bus.write8(0x0134, 0xFF);
+        assert_eq!(bus.read8(0x0134), 0x44);
+    }
 }
