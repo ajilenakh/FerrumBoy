@@ -6,14 +6,21 @@ const HRAM_START: u16 = 0xFF80;
 const HRAM_END: u16 = 0xFFFE;
 const IO_START: u16 = 0xFF00;
 const IO_END: u16 = 0xFF7F;
+const CARTRIDGE_ROM_START: u16 = 0x0000;
+const CARTRIDGE_ROM_END: u16 = 0x7FFF;
+const CARTRIDGE_RAM_START: u16 = 0xA000;
+const CARTRIDGE_RAM_END: u16 = 0xBFFF;
 
 pub struct Bus {
     // Work RAM: 8KB
     wram: [u8; 0x2000],
+
     // High RAM: 127 bytes
     hram: [u8; 0x7F],
+
     // Boot ROM/Cartridge slot (Placeholder for now)
-    // pub cartridge: Option<cartridge::Cartridge>,
+    pub cartridge: Option<cartridge::Cartridge>,
+
     // I/O REGISTERS 128 bytes
     ioreg: [u8; 0x80],
 }
@@ -21,12 +28,22 @@ pub struct Bus {
 impl Bus {
     #[must_use]
     pub const fn default() -> Self {
-        Self { wram: [0; 0x2000], hram: [0; 0x7F], ioreg: [0; 0x80] }
+        Self { wram: [0; 0x2000], hram: [0; 0x7F], ioreg: [0; 0x80], cartridge: None }
     }
 
     #[must_use]
-    pub const fn read8(&self, addr: u16) -> u8 {
+    pub fn read8(&self, addr: u16) -> u8 {
         match addr {
+            // CARTRIDGE ROM Range
+            CARTRIDGE_ROM_START..=CARTRIDGE_ROM_END => {
+                self.cartridge.as_ref().map_or(0xFF, |cart| cart.read8(addr))
+            }
+
+            // Cartridge External RAM Range
+            CARTRIDGE_RAM_START..=CARTRIDGE_RAM_END => {
+                self.cartridge.as_ref().map_or(0xFF, |cart| cart.read8(addr))
+            }
+
             // WORK RAM & ECHO RAM
             WRAM_START..=WRAM_END => {
                 let index: usize = (addr & 0x1FFF) as usize;
@@ -49,8 +66,15 @@ impl Bus {
         }
     }
 
-    pub const fn write8(&mut self, addr: u16, val: u8) {
+    pub fn write8(&mut self, addr: u16, val: u8) {
         match addr {
+            // CARTRIDGE ROM Range
+            CARTRIDGE_ROM_START..=CARTRIDGE_ROM_END => {
+                if let Some(cart) = &mut self.cartridge {
+                    cart.write8(addr, val);
+                }
+            }
+
             // WORK RAM & Echo Ram
             WRAM_START..=WRAM_END => {
                 let index: usize = (addr & 0x1FFF) as usize;
@@ -63,6 +87,13 @@ impl Bus {
                 self.ioreg[index] = val;
             }
 
+            // Cartridge External RAM Range
+            CARTRIDGE_RAM_START..=CARTRIDGE_RAM_END => {
+                if let Some(cart) = &mut self.cartridge {
+                    cart.write8(addr, val);
+                }
+            }
+
             // HIGH RAM
             HRAM_START..=HRAM_END => {
                 let index: usize = (addr - HRAM_START) as usize;
@@ -71,6 +102,9 @@ impl Bus {
 
             _ => (),
         }
+    }
+    pub fn load_cartridge(&mut self, cart: cartridge::Cartridge) {
+        self.cartridge = Some(cart);
     }
 }
 

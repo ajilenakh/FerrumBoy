@@ -74,14 +74,14 @@ ferrumboy/
 
 ### Tasks
 
-- [ ] Create Bus struct
-- [ ] Implement read8()
-- [ ] Implement write8()
-- [ ] Add WRAM support
-- [ ] Add HRAM support
-- [ ] Add IO register stubs
-- [ ] Connect cartridge reads
-- [ ] Add memory tests
+- [*] Create Bus struct
+- [*] Implement read8()
+- [*] Implement write8()
+- [*] Add WRAM support
+- [*] Add HRAM support
+- [*] Add IO register stubs
+- [*] Connect cartridge reads
+- [*] Add memory tests
 
 ### Memory Map
 
